@@ -1,28 +1,26 @@
 import React from 'react'
 import styles from './footer.module.scss'
-
+import { Facebook, Instagram, LinkedIn, Send, Twitter } from '@mui/icons-material'
+import { downloadAppStore, downloadGoogle, qrDownload } from 'src/assets/images'
 const Footer: React.FC = () => {
   return (
     <footer className={styles.footer}>
       <div className={styles.container}>
         <div className={styles.section}>
-          <h3>Exclusive</h3>
-          <p>Subscribe</p>
+          <h2>Exclusive</h2>
+          <h3>Subscribe</h3>
           <p>Get 10% off your first order</p>
           <div className={styles.subscribe}>
             <input type='email' placeholder='Enter your email' className={styles.input} />
             <button className={styles.button}>
-              <span>&#10140;</span> {/* Arrow icon */}
+              <Send />
             </button>
           </div>
         </div>
 
         <div className={styles.section}>
           <h3>Support</h3>
-          <address>
-            111 Bijoy sarani, Dhaka, <br />
-            DH 1515, Bangladesh.
-          </address>
+          <address>111 Bijoy sarani, Dhaka, DH 1515, Bangladesh.</address>
           <a href='mailto:exclusive@gmail.com'>exclusive@gmail.com</a>
           <p>+88015-88888-9999</p>
         </div>
@@ -69,15 +67,28 @@ const Footer: React.FC = () => {
         <div className={styles.section}>
           <h3>Download App</h3>
           <p>Save $3 with App New User Only</p>
-          <div className={styles.qr}>
-            <img src='/qr-google.png' alt='Google Play QR' />
-            <img src='/qr-appstore.png' alt='App Store QR' />
+          <div className={styles.download}>
+            <div className={styles.imgQr}>
+              <img src={qrDownload} alt='' />
+            </div>
+            <div className={styles.imgStore}>
+              <img src={downloadGoogle} alt='' />
+              <img src={downloadAppStore} />
+            </div>
           </div>
           <div className={styles.socials}>
-            <a href='#facebook'>f</a>
-            <a href='#twitter'>t</a>
-            <a href='#instagram'>i</a>
-            <a href='#linkedin'>in</a>
+            <a href='#facebook'>
+              <Facebook />
+            </a>
+            <a href='#twitter'>
+              <Twitter />
+            </a>
+            <a href='#instagram'>
+              <Instagram />
+            </a>
+            <a href='#linkedin'>
+              <LinkedIn />
+            </a>
           </div>
         </div>
       </div>

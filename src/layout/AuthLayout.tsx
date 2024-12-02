@@ -1,18 +1,18 @@
 import React from 'react'
 import Footer from 'src/pages/components/Footer/Footer'
-import Header from 'src/pages/components/Header'
+import HeaderAuth from 'src/pages/components/Header/HeaderAuth'
 
 interface Props {
   children?: React.ReactNode
 }
-const RegisterLayout = ({ children }: Props) => {
+const AuthLayout = ({ children }: Props) => {
   return (
     <>
-      <Header />
+      <HeaderAuth />
       {children}
       <Footer />
     </>
   )
 }
 
-export default RegisterLayout
+export default AuthLayout

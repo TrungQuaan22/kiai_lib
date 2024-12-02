@@ -1,4 +1,4 @@
 import DefaultLayout from './DefaultLayout'
-import RegisterLayout from './RegisterLayout'
+import RegisterLayout from './AuthLayout'
 
 export { DefaultLayout, RegisterLayout }

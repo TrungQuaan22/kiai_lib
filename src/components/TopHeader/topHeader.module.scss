@@ -1,0 +1,38 @@
+.container {
+  padding: 0 155px;
+  width: 100%;
+  height: 48px;
+  background-color: rgba(255, 69, 0, 0.7804);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #fff;
+  p {
+    display: inline-block;
+  }
+  .text {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+  .language {
+    width: 78px;
+    select {
+      color: #fff;
+      background-color: #ff6e38;
+      border: none;
+
+      &:focus {
+        outline: none;
+      }
+    }
+
+  }
+  .link {
+    color: #fff;
+    text-decoration: underline;
+    margin-left: 5px;
+  }
+}

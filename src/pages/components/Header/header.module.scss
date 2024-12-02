@@ -1,0 +1,11 @@
+.container {
+  display: flex;
+  height: 100px;
+  background-color: bisque;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 155px;
+}
+.container div:last-child {
+  display: flex;
+}
