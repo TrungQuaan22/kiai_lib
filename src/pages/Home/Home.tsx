@@ -1,110 +1,253 @@
-import { useEffect, useState } from 'react'
-import { Button, Card, Flex, Image, Text } from "@chakra-ui/react"
+import { useEffect, useRef, useState } from 'react'
+import { Button, Image, Text } from '@chakra-ui/react'
 import styles from './Home.module.scss'
-import Slider from 'react-slick';
-import { Rating } from 'src/components/ui/rating';
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
+import Slider from 'react-slick'
+
+import EastIcon from '@mui/icons-material/East'
+import 'slick-carousel/slick/slick.css'
+import 'slick-carousel/slick/slick-theme.css'
+import BookCard from 'src/components/BookCard/BookCard'
+import CategoryCard from 'src/components/CategoryCard/CategoryCard'
+import { Row } from 'node_modules/@chakra-ui/react/dist/types/components/table/namespace'
+import { useNavigate } from 'react-router-dom'
+import { banner, commit } from 'src/assets/images'
+const mockBooks = [
+  {
+    id: 1,
+    title: 'The Great Gatsby',
+    imgUrl: 'https://via.placeholder.com/150',
+    rating: 4.5,
+    reviewCount: 120
+  },
+  {
+    id: 2,
+    title: '1984',
+    imgUrl: 'https://via.placeholder.com/150',
+    rating: 4.8,
+    reviewCount: 200
+  },
+  {
+    id: 3,
+    title: 'To Kill a Mockingbird',
+    imgUrl: 'https://via.placeholder.com/150',
+    rating: 4.7,
+    reviewCount: 180
+  },
+  {
+    id: 4,
+    title: 'Pride and Prejudice',
+    imgUrl: 'https://via.placeholder.com/150',
+    rating: 4.6,
+    reviewCount: 150
+  },
+  {
+    id: 5,
+    title: 'The Catcher in the Rye',
+    imgUrl: 'https://via.placeholder.com/150',
+    rating: 4.2,
+    reviewCount: 95
+  },
+  {
+    id: 6,
+    title: 'The Hobbit',
+    imgUrl: 'https://via.placeholder.com/150',
+    rating: 4.9,
+    reviewCount: 300
+  },
+  {
+    id: 7,
+    title: 'The Hobbit',
+    imgUrl: 'https://via.placeholder.com/150',
+    rating: 4.9,
+    reviewCount: 300
+  },
+  {
+    id: 8,
+    title: 'The Hobbit',
+    imgUrl: 'https://via.placeholder.com/150',
+    rating: 4.9,
+    reviewCount: 300
+  },
+  {
+    id: 9,
+    title: 'The Hobbit',
+    imgUrl: 'https://via.placeholder.com/150',
+    rating: 4.9,
+    reviewCount: 300
+  },
+  {
+    id: 10,
+    title: 'The Hobbit',
+    imgUrl: 'https://via.placeholder.com/150',
+    rating: 4.9,
+    reviewCount: 300
+  },
+  {
+    id: 11,
+    title: 'The Great Gatsby',
+    imgUrl: 'https://via.placeholder.com/150',
+    rating: 4.5,
+    reviewCount: 120
+  },
+  {
+    id: 12,
+    title: '1984',
+    imgUrl: 'https://via.placeholder.com/150',
+    rating: 4.8,
+    reviewCount: 200
+  },
+  {
+    id: 13,
+    title: 'To Kill a Mockingbird',
+    imgUrl: 'https://via.placeholder.com/150',
+    rating: 4.7,
+    reviewCount: 180
+  },
+  {
+    id: 14,
+    title: 'Pride and Prejudice',
+    imgUrl: 'https://via.placeholder.com/150',
+    rating: 4.6,
+    reviewCount: 150
+  },
+  {
+    id: 15,
+    title: 'The Catcher in the Rye',
+    imgUrl: 'https://via.placeholder.com/150',
+    rating: 4.2,
+    reviewCount: 95
+  },
+  {
+    id: 16,
+    title: 'To Kill a Mockingbird',
+    imgUrl: 'https://via.placeholder.com/150',
+    rating: 4.7,
+    reviewCount: 180
+  },
+  {
+    id: 17,
+    title: 'Pride and Prejudice',
+    imgUrl: 'https://via.placeholder.com/150',
+    rating: 4.6,
+    reviewCount: 150
+  },
+  {
+    id: 18,
+    title: 'The Catcher in the Rye',
+    imgUrl: 'https://via.placeholder.com/150',
+    rating: 4.2,
+    reviewCount: 95
+  }
+]
+const mockCategories = [
+  "Woman's Fashion",
+  "Men's Fashion",
+  'Electronics',
+  'Home & Lifestyle',
+  'Medicine',
+  'Sports & Outdoor',
+  "Baby's & Toys",
+  'Groceries & Pets',
+  'Health & Beauty',
+  'Books',
+  'Gaming',
+  'Automotive',
+  'Travel'
+]
+const categories = [
+  {
+    id: 1,
+    name: 'Phones',
+    icon: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQfe9n1387magZlSXyYaLCjBXSfuCeqdyE0A&s'
+  },
+  {
+    id: 2,
+    name: 'Computers',
+    icon: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQfe9n1387magZlSXyYaLCjBXSfuCeqdyE0A&s'
+  },
+  {
+    id: 3,
+    name: 'SmartWatch',
+    icon: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQfe9n1387magZlSXyYaLCjBXSfuCeqdyE0A&s'
+  },
+  {
+    id: 4,
+    name: 'Camera',
+    icon: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQfe9n1387magZlSXyYaLCjBXSfuCeqdyE0A&s'
+  },
+  {
+    id: 5,
+    name: 'HeadPhones',
+    icon: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQfe9n1387magZlSXyYaLCjBXSfuCeqdyE0A&s'
+  },
+  {
+    id: 6,
+    name: 'Gaming',
+    icon: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQfe9n1387magZlSXyYaLCjBXSfuCeqdyE0A&s'
+  }
+]
+const mockSliderImages = [
+  { id: 1, src: 'https://via.placeholder.com/800x300?text=Slider+1' },
+  { id: 2, src: 'https://via.placeholder.com/800x300?text=Slider+2' },
+  { id: 3, src: 'https://via.placeholder.com/800x300?text=Slider+3' }
+]
 export default function Home() {
-
-  const mockBooks = [
-    {
-      "id": 1,
-      "title": "The Great Gatsby",
-      "coverImage": "https://via.placeholder.com/150",
-      "rating": 4.5,
-      "reviewCount": 120
-    },
-    {
-      "id": 2,
-      "title": "1984",
-      "coverImage": "https://via.placeholder.com/150",
-      "rating": 4.8,
-      "reviewCount": 200
-    },
-    {
-      "id": 3,
-      "title": "To Kill a Mockingbird",
-      "coverImage": "https://via.placeholder.com/150",
-      "rating": 4.7,
-      "reviewCount": 180
-    },
-    {
-      "id": 4,
-      "title": "Pride and Prejudice",
-      "coverImage": "https://via.placeholder.com/150",
-      "rating": 4.6,
-      "reviewCount": 150
-    },
-    {
-      "id": 5,
-      "title": "The Catcher in the Rye",
-      "coverImage": "https://via.placeholder.com/150",
-      "rating": 4.2,
-      "reviewCount": 95
-    },
-    {
-      "id": 6,
-      "title": "The Hobbit",
-      "coverImage": "https://via.placeholder.com/150",
-      "rating": 4.9,
-      "reviewCount": 300
-    }
-  ]
-  const mockCategories = [
-    'Woman\'s Fashion',
-    'Men\'s Fashion',
-    'Electronics',
-    'Home & Lifestyle',
-    'Medicine',
-    'Sports & Outdoor',
-    'Baby\'s & Toys',
-    'Groceries & Pets',
-    'Health & Beauty',
-    'Books',
-    'Gaming',
-    'Automotive',
-    'Travel',
-  ];
-
-  const mockSliderImages = [
-    { id: 1, src: 'https://via.placeholder.com/800x300?text=Slider+1' },
-    { id: 2, src: 'https://via.placeholder.com/800x300?text=Slider+2' },
-    { id: 3, src: 'https://via.placeholder.com/800x300?text=Slider+3' },
-  ];
-  const [currentSlide, setCurrentSlide] = useState(0);
-
   useEffect(() => {
     const slideInterval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % mockSliderImages.length);
-    }, 3000);
-    return () => clearInterval(slideInterval);
-  }, []);
+      setCurrentSlide((prev) => (prev + 1) % mockSliderImages.length)
+    }, 3000)
+    return () => clearInterval(slideInterval)
+  }, [])
+  const navigate = useNavigate()
+  const [currentSlide, setCurrentSlide] = useState(0)
+  const sliderRef = useRef(null)
+  const cateRef = useRef(null)
+  const allBookRef = useRef(null)
   const settings = {
-    dots: true,
+    dots: false,
     infinite: true,
-    speed: 500,
-    slidesToShow: 4, // Số lượng Card hiển thị trong một lần
+    speed: 700,
+    cssEase: 'ease-in-out',
+    slidesToShow: 4,
     slidesToScroll: 1,
+    arrows: false,
+    draggable: false,
+    useTransform: true,
+    swipeToSlide: true,
+    touchThreshold: 15,
     responsive: [
       {
-        breakpoint: 1024, // Dành cho màn hình lớn hơn 1024px
+        breakpoint: 1470,
         settings: {
-          slidesToShow: 2, // 2 Card khi màn hình nhỏ hơn 1024px
-          slidesToScroll: 1,
-        },
+          slidesToShow: 3,
+          slidesToScroll: 1
+        }
       },
       {
-        breakpoint: 600, // Dành cho màn hình nhỏ hơn 600px
+        breakpoint: 1024,
         settings: {
-          slidesToShow: 1, // 1 Card khi màn hình nhỏ
-          slidesToScroll: 1,
-        },
+          slidesToShow: 2,
+          slidesToScroll: 1
+        }
       },
-    ],
-  };
+      {
+        breakpoint: 600,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1
+        }
+      }
+    ]
+  }
+  const cateSettings = {
+    ...settings,
+    slidesToShow: 6
+  }
+  const productSetting = {
+    ...settings,
+    rows: 2
+  }
   return (
-
     <div className={styles.container}>
       {/* Categories & Slide banner */}
       <div className={styles.wrapper}>
@@ -117,23 +260,21 @@ export default function Home() {
           ))}
         </div>
 
-        {/* Slider */}
+        {/* Slider images */}
         <div className={styles.slider}>
           {mockSliderImages.map((image, index) => (
             <img
               key={image.id}
               src={image.src}
               alt={`Slide ${index + 1}`}
-              className={`${styles.slide} ${currentSlide === index ? styles.active : ''
-                }`}
+              className={`${styles.slide} ${currentSlide === index ? styles.active : ''}`}
             />
           ))}
           <div className={styles.dots}>
             {mockSliderImages.map((_, index) => (
               <span
                 key={index}
-                className={`${styles.dot} ${currentSlide === index ? styles.activeDot : ''
-                  }`}
+                className={`${styles.dot} ${currentSlide === index ? styles.activeDot : ''}`}
                 onClick={() => setCurrentSlide(index)}
               />
             ))}
@@ -141,87 +282,87 @@ export default function Home() {
         </div>
       </div>
       {/* Top Book  */}
-      <Text fontSize={20} fontWeight={600} m={20}>The Most Borrowed Books</Text>
-      <div className={styles.topBookContainer}>
-        <Slider {...settings} className={styles.booksSlider}>
-          <Card.Root maxW="sm" overflow="hidden" maxWidth={200}>
-            <Image
-              src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
-              alt="Green double couch with wooden legs"
-            />
-            <Card.Body gap="2">
-              <Card.Title>Living room Sofa</Card.Title>
-              <Flex align="center">
-                <Rating readOnly allowHalf defaultValue={4.5} color="yellow" />
-                <Text ml="2" fontSize="sm">
-                  (86)
-                </Text>
-              </Flex>
-            </Card.Body>
-          </Card.Root>
-          <Card.Root maxW="sm" overflow="hidden">
-            <Image
-              src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
-              alt="Green double couch with wooden legs"
-            />
-            <Card.Body gap="2">
-              <Card.Title>Living room Sofa</Card.Title>
-              <Flex align="center">
-                <Rating readOnly allowHalf defaultValue={4.5} color="yellow" />
-                <Text ml="2" fontSize="sm">
-                  (86)
-                </Text>
-              </Flex>
-            </Card.Body>
-          </Card.Root>
-          <Card.Root maxW="sm" overflow="hidden">
-            <Image
-              src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
-              alt="Green double couch with wooden legs"
-            />
-            <Card.Body gap="2">
-              <Card.Title>Living room Sofa</Card.Title>
-              <Flex align="center">
-                <Rating readOnly allowHalf defaultValue={4.5} color="yellow" />
-                <Text ml="2" fontSize="sm">
-                  (86)
-                </Text>
-              </Flex>
-            </Card.Body>
-          </Card.Root>
-          <Card.Root maxW="sm" overflow="hidden">
-            <Image
-              src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
-              alt="Green double couch with wooden legs"
-            />
-            <Card.Body gap="2">
-              <Card.Title>Living room Sofa</Card.Title>
-              <Flex align="center">
-                <Rating readOnly allowHalf defaultValue={4.5} color="yellow" />
-                <Text ml="2" fontSize="sm">
-                  (86)
-                </Text>
-              </Flex>
-            </Card.Body>
-          </Card.Root>
-          <Card.Root maxW="sm" overflow="hidden">
-            <Image
-              src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
-              alt="Green double couch with wooden legs"
-            />
-            <Card.Body gap="2">
-              <Card.Title>Living room Sofa</Card.Title>
-              <Flex align="center">
-                <Rating readOnly allowHalf defaultValue={4.5} color="yellow" />
-                <Text ml="2" fontSize="sm">
-                  (86)
-                </Text>
-              </Flex>
-            </Card.Body>
-          </Card.Root>
 
+      <div className={styles.topBookContainer}>
+        <Text fontSize={36} fontWeight={600} mt={10}>
+          The Most Borrowed Books
+        </Text>
+        <div className={styles.arrowButton}>
+          <div className={styles.leftArrow} onClick={() => sliderRef.current.slickPrev()}>
+            <EastIcon />
+          </div>
+          <div className={styles.rightArrow} onClick={() => sliderRef.current.slickNext()}>
+            <EastIcon />
+          </div>
+        </div>
+        <Slider {...settings} className={styles.booksSlider} ref={sliderRef}>
+          {mockBooks.map((item) => (
+            <div onClick={() => navigate(`/books/${item.id}`)}>
+              <BookCard key={item.id} {...item} />
+            </div>
+          ))}
+        </Slider>
+        <div className={styles.viewAll}>
+          <Button className={styles.btnView} padding='25px 50px' variant='outline' onClick={() => navigate('/books')}>
+            View All Books
+          </Button>
+        </div>
+      </div>
+
+      {/* Category */}
+      <div className={styles.categories}>
+        <Text fontSize={36} fontWeight={600} mt={10} className={styles.titleSection}>
+          Categories
+        </Text>
+        <div className={styles.arrowButton}>
+          <div className={styles.leftArrow} onClick={() => cateRef.current.slickPrev()}>
+            <EastIcon />
+          </div>
+          <div className={styles.rightArrow} onClick={() => cateRef.current.slickNext()}>
+            <EastIcon />
+          </div>
+        </div>
+        <Slider {...cateSettings} ref={cateRef}>
+          {categories.map((category) => (
+            <div key={category.id} className={styles.categoriesItem}>
+              <CategoryCard name={category.name} icon={category.icon} />
+            </div>
+          ))}
         </Slider>
       </div>
+      <div className={styles.banner}>
+        <Image src={banner} marginBottom={20} />
+      </div>
+      <div className={styles.allBookContainer}>
+        <Text className={styles.titleSection}>Our books</Text>
+        <Text fontSize={36} fontWeight={600} mt={0}>
+          Explore Our Books
+        </Text>
+        <div className={styles.arrowButton}>
+          <div className={styles.leftArrow} onClick={() => allBookRef.current.slickPrev()}>
+            <EastIcon />
+          </div>
+          <div className={styles.rightArrow} onClick={() => allBookRef.current.slickNext()}>
+            <EastIcon />
+          </div>
+        </div>
+        <Slider {...productSetting} className={styles.booksSlider} ref={allBookRef}>
+          {mockBooks.map((item) => (
+            <div onClick={() => navigate(`/books/${item.id}`)}>
+              <BookCard key={item.id} {...item} />
+            </div>
+          ))}
+        </Slider>
+        <div className={styles.viewAll}>
+          <Button className={styles.btnView} padding='25px 50px' variant='outline'>
+            View All Books
+          </Button>
+        </div>
+      </div>
+       {/* commit */}
+       <div className={styles.commit}>
+        <Image src={commit}/>
+       </div>
     </div>
   )
 }
