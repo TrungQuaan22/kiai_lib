@@ -354,7 +354,7 @@ export default function Home() {
           ))}
         </Slider>
         <div className={styles.viewAll}>
-          <Button className={styles.btnView} padding='25px 50px' variant='outline'>
+          <Button className={styles.btnView} padding='25px 50px' variant='outline' onClick={() => navigate("/books")}>
             View All Books
           </Button>
         </div>
