@@ -1,16 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
 import { Button, Image, Text } from '@chakra-ui/react'
-import styles from './Home.module.scss'
-import Slider from 'react-slick'
-
-import EastIcon from '@mui/icons-material/East'
-import 'slick-carousel/slick/slick.css'
-import 'slick-carousel/slick/slick-theme.css'
-import BookCard from 'src/components/BookCard/BookCard'
-import CategoryCard from 'src/components/CategoryCard/CategoryCard'
-import { Row } from 'node_modules/@chakra-ui/react/dist/types/components/table/namespace'
+import { Toaster, toaster } from 'src/components/ui/toaster'
 import { useNavigate } from 'react-router-dom'
 import { banner, commit } from 'src/assets/images'
+import CustomSlider from 'src/components/CustomSlider'
+import styles from './Home.module.scss'
+import BookCard from 'src/components/BookCard/BookCard'
+import CategoryCard from 'src/components/CategoryCard/CategoryCard'
+import { sliderSettings } from 'src/utils/utils'
 const mockBooks = [
   {
     id: 1,
@@ -192,177 +189,126 @@ const mockSliderImages = [
   { id: 3, src: 'https://via.placeholder.com/800x300?text=Slider+3' }
 ]
 export default function Home() {
+  const navigate = useNavigate()
+  const [currentSlide, setCurrentSlide] = useState(0)
+  const topBookRef = useRef(null)
+  const cateRef = useRef(null)
+  const allBookRef = useRef(null)
   useEffect(() => {
     const slideInterval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % mockSliderImages.length)
     }, 3000)
     return () => clearInterval(slideInterval)
   }, [])
-  const navigate = useNavigate()
-  const [currentSlide, setCurrentSlide] = useState(0)
-  const sliderRef = useRef(null)
-  const cateRef = useRef(null)
-  const allBookRef = useRef(null)
-  const settings = {
-    dots: false,
-    infinite: true,
-    speed: 700,
-    cssEase: 'ease-in-out',
-    slidesToShow: 4,
-    slidesToScroll: 1,
-    arrows: false,
-    draggable: false,
-    useTransform: true,
-    swipeToSlide: true,
-    touchThreshold: 15,
-    responsive: [
-      {
-        breakpoint: 1470,
-        settings: {
-          slidesToShow: 3,
-          slidesToScroll: 1
-        }
-      },
-      {
-        breakpoint: 1024,
-        settings: {
-          slidesToShow: 2,
-          slidesToScroll: 1
-        }
-      },
-      {
-        breakpoint: 600,
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1
-        }
-      }
-    ]
-  }
+
   const cateSettings = {
-    ...settings,
+    ...sliderSettings,
     slidesToShow: 6
   }
   const productSetting = {
-    ...settings,
+    ...sliderSettings,
     rows: 2
   }
+  const handleAddToCart = () => {
+    toaster.create({
+      title: `Thêm vào giỏ hàng thành công`,
+      type: 'success'
+    })
+  }
   return (
-    <div className={styles.container}>
-      {/* Categories & Slide banner */}
-      <div className={styles.wrapper}>
-        {/* Danh mục */}
-        <div className={styles.categoryList}>
-          {mockCategories.map((category, index) => (
-            <div key={index} className={styles.categoryItem}>
-              {category}
-            </div>
-          ))}
-        </div>
-
-        {/* Slider images */}
-        <div className={styles.slider}>
-          {mockSliderImages.map((image, index) => (
-            <img
-              key={image.id}
-              src={image.src}
-              alt={`Slide ${index + 1}`}
-              className={`${styles.slide} ${currentSlide === index ? styles.active : ''}`}
-            />
-          ))}
-          <div className={styles.dots}>
-            {mockSliderImages.map((_, index) => (
-              <span
-                key={index}
-                className={`${styles.dot} ${currentSlide === index ? styles.activeDot : ''}`}
-                onClick={() => setCurrentSlide(index)}
-              />
+    <>
+      <Toaster />
+      <div className={styles.container}>
+        {/* Categories & Slide banner */}
+        <div className={styles.wrapper}>
+          {/* Danh mục */}
+          <div className={styles.categoryList}>
+            {mockCategories.map((category, index) => (
+              <div key={index} className={styles.categoryItem}>
+                {category}
+              </div>
             ))}
           </div>
+          {/* Slider images */}
+          <div className={styles.slider}>
+            {mockSliderImages.map((image, index) => (
+              <img
+                key={image.id}
+                src={image.src}
+                alt={`Slide ${index + 1}`}
+                className={`${styles.slide} ${currentSlide === index ? styles.active : ''}`}
+              />
+            ))}
+            <div className={styles.dots}>
+              {mockSliderImages.map((_, index) => (
+                <span
+                  key={index}
+                  className={`${styles.dot} ${currentSlide === index ? styles.activeDot : ''}`}
+                  onClick={() => setCurrentSlide(index)}
+                />
+              ))}
+            </div>
+          </div>
         </div>
-      </div>
-      {/* Top Book  */}
+        {/* Top Book  */}
 
-      <div className={styles.topBookContainer}>
-        <Text fontSize={36} fontWeight={600} mt={10}>
-          The Most Borrowed Books
-        </Text>
-        <div className={styles.arrowButton}>
-          <div className={styles.leftArrow} onClick={() => sliderRef.current.slickPrev()}>
-            <EastIcon />
-          </div>
-          <div className={styles.rightArrow} onClick={() => sliderRef.current.slickNext()}>
-            <EastIcon />
+        <div className={styles.topBookContainer}>
+          <Text fontSize={36} fontWeight={600} mt={10}>
+            The Most Borrowed Books
+          </Text>
+          <CustomSlider sliderRef={topBookRef} settings={sliderSettings}>
+            {mockBooks.map((item) => (
+              <div key={item.id}>
+                <BookCard {...item} mode='default' onAddToCart={handleAddToCart} />
+              </div>
+            ))}
+          </CustomSlider>
+          <div className={styles.viewAll}>
+            <Button className={styles.btnView} padding='25px 50px' variant='outline' onClick={() => navigate('/books')}>
+              View All Books
+            </Button>
           </div>
         </div>
-        <Slider {...settings} className={styles.booksSlider} ref={sliderRef}>
-          {mockBooks.map((item) => (
-            <div onClick={() => navigate(`/books/${item.id}`)}>
-              <BookCard key={item.id} {...item} />
-            </div>
-          ))}
-        </Slider>
-        <div className={styles.viewAll}>
-          <Button className={styles.btnView} padding='25px 50px' variant='outline' onClick={() => navigate('/books')}>
-            View All Books
-          </Button>
-        </div>
-      </div>
 
-      {/* Category */}
-      <div className={styles.categories}>
-        <Text fontSize={36} fontWeight={600} mt={10} className={styles.titleSection}>
-          Categories
-        </Text>
-        <div className={styles.arrowButton}>
-          <div className={styles.leftArrow} onClick={() => cateRef.current.slickPrev()}>
-            <EastIcon />
-          </div>
-          <div className={styles.rightArrow} onClick={() => cateRef.current.slickNext()}>
-            <EastIcon />
-          </div>
+        {/* Category */}
+        <div className={styles.categories}>
+          <Text fontSize={36} fontWeight={600} mt={10} className={styles.titleSection}>
+            Categories
+          </Text>
+          <CustomSlider sliderRef={cateRef} settings={cateSettings}>
+            {categories.map((category) => (
+              <div key={category.id} className={styles.categoriesItem}>
+                <CategoryCard name={category.name} icon={category.icon} />
+              </div>
+            ))}
+          </CustomSlider>
         </div>
-        <Slider {...cateSettings} ref={cateRef}>
-          {categories.map((category) => (
-            <div key={category.id} className={styles.categoriesItem}>
-              <CategoryCard name={category.name} icon={category.icon} />
+        <div className={styles.banner}>
+          <Image src={banner} marginBottom={20} />
+        </div>
+        <div className={styles.allBookContainer}>
+          <Text className={styles.titleSection}>Our books</Text>
+          <Text fontSize={36} fontWeight={600} mt={0}>
+            Explore Our Books
+          </Text>
+          <CustomSlider sliderRef={allBookRef} settings={productSetting}>
+            {mockBooks.map((item) => 
+            <div key={item.id}>
+              <BookCard {...item} mode='default' onAddToCart={handleAddToCart}/>
             </div>
-          ))}
-        </Slider>
-      </div>
-      <div className={styles.banner}>
-        <Image src={banner} marginBottom={20} />
-      </div>
-      <div className={styles.allBookContainer}>
-        <Text className={styles.titleSection}>Our books</Text>
-        <Text fontSize={36} fontWeight={600} mt={0}>
-          Explore Our Books
-        </Text>
-        <div className={styles.arrowButton}>
-          <div className={styles.leftArrow} onClick={() => allBookRef.current.slickPrev()}>
-            <EastIcon />
-          </div>
-          <div className={styles.rightArrow} onClick={() => allBookRef.current.slickNext()}>
-            <EastIcon />
+            )}
+          </CustomSlider>
+          <div className={styles.viewAll}>
+            <Button className={styles.btnView} padding='25px 50px' variant='outline' onClick={() => navigate('/books')}>
+              View All Books
+            </Button>
           </div>
         </div>
-        <Slider {...productSetting} className={styles.booksSlider} ref={allBookRef}>
-          {mockBooks.map((item) => (
-            <div onClick={() => navigate(`/books/${item.id}`)}>
-              <BookCard key={item.id} {...item} />
-            </div>
-          ))}
-        </Slider>
-        <div className={styles.viewAll}>
-          <Button className={styles.btnView} padding='25px 50px' variant='outline' onClick={() => navigate("/books")}>
-            View All Books
-          </Button>
+        {/* commit */}
+        <div className={styles.commit}>
+          <Image src={commit} />
         </div>
       </div>
-       {/* commit */}
-       <div className={styles.commit}>
-        <Image src={commit}/>
-       </div>
-    </div>
+    </>
   )
 }
